@@ -17,7 +17,7 @@ public class DynamoDBConfig {
 
     public DynamoDBConfig() {
         this.dynamoDbClient = DynamoDbClient.builder()
-                .region(Region.US_EAST_2) // Adjust as needed
+                .region(Region.EU_CENTRAL_1) // Adjust as needed
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
