@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster | Your Modern Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #1cc88a;
+            --danger: #e74a3b;
+            --warning: #f6c23e;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(45deg, #f5f7fa, #c3cfe2, #d4a5e5, #a5d6e5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            transition: background 0.3s ease;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .dark-mode {
+            background: linear-gradient(45deg, #2c3e50, #4a5568, #6b7280, #2c3e50);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            animation: fadeInUp 0.7s ease;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 120px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #d1d3e2;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #375ac9;
+            transform: scale(1.05);
+        }
+
+        .todo-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .todo-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .todo-item.completed {
+            background: #e9ecef;
+            opacity: 0.8;
+        }
+
+        .todo-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .todo-description {
+            color: #858796;
+            font-size: 0.9rem;
+        }
+
+        .todo-actions button {
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .todo-actions button:hover {
+            transform: scale(1.1);
+        }
+
+        .priority-badge {
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .priority-high { background: #fce4e4; color: var(--danger); }
+        .priority-medium { background: #fff3cd; color: var(--warning); }
+        .priority-low { background: #d4edda; color: var(--secondary); }
+
+        .filter-btn {
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            margin: 0.2rem;
+            background: white;
+            border: 1px solid #d1d3e2;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #858796;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #858796;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideInRight 0.3s ease;
+        }
+
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            background: #434558;
+        }
+
+        @media (max-width: 768px) {
+            .stats { flex-direction: column; gap: 1rem; }
+            .stat-item { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div id="toast-container" class="toast-container"></div>
+<button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+<header class="header">
+    <div class="container">
+        <h1>TaskMaster</h1>
+        <div class="stats">
+            <div class="stat-item"><div class="stat-value" id="totalTasks">0</div><div>Total Tasks</div></div>
+            <div class="stat-item"><div class="stat-value" id="completedTasks">0</div><div>Completed</div></div>
+            <div class="stat-item"><div class="stat-value" id="pendingTasks">0</div><div>Pending</div></div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="card animate__animated animate__fadeIn">
+        <div class="card-header">Add New Task</div>
+        <div class="card-body">
+            <form id="todoForm">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Task Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="What needs to be done?" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" rows="2" placeholder="Add details..."></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="dueDate" class="form-label">Due Date</label>
+                        <input type="date" class="form-control" id="dueDate">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card animate__animated animate__fadeIn">
+        <div class="card-header">My Tasks</div>
+        <div class="card-body">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" class="form-control" id="searchTasks" placeholder="Search tasks...">
+            </div>
+            <div class="filter-controls mb-3">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+                <button class="filter-btn" data-filter="high">High Priority</button>
+            </div>
+            <div class="dropdown mb-3">
+                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Sort By <i class="fas fa-sort"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item sort-option" data-sort="date-asc" href="#">Date (Oldest)</a></li>
+                    <li><a class="dropdown-item sort-option" data-sort="date-desc" href="#">Date (Newest)</a></li>
+                    <li><a class="dropdown-item sort-option" data-sort="priority" href="#">Priority</a></li>
+                    <li><a class="dropdown-item sort-option" data-sort="alphabetical" href="#">Alphabetical</a></li>
+                </ul>
+            </div>
+            <div id="todoListContainer"></div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const elements = {
+            todoForm: document.getElementById('todoForm'),
+            todoListContainer: document.getElementById('todoListContainer'),
+            searchTasks: document.getElementById('searchTasks'),
+            filterButtons: document.querySelectorAll('.filter-btn'),
+            sortOptions: document.querySelectorAll('.sort-option'),
+            totalTasks: document.getElementById('totalTasks'),
+            completedTasks: document.getElementById('completedTasks'),
+            pendingTasks: document.getElementById('pendingTasks'),
+            darkModeToggle: document.getElementById('darkModeToggle')
+        };
+
+        let todos = [];
+        let currentFilter = 'all';
+        let currentSort = 'date-desc';
+        let currentSearch = '';
+
+        // Event Listeners
+        elements.todoForm.addEventListener('submit', addTask);
+        elements.searchTasks.addEventListener('input', () => {
+            currentSearch = elements.searchTasks.value;
+            filterAndRender();
+        });
+        elements.filterButtons.forEach(btn => btn.addEventListener('click', () => {
+            elements.filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            filterAndRender();
+        }));
+        elements.sortOptions.forEach(opt => opt.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentSort = opt.dataset.sort;
+            filterAndRender();
+        }));
+        elements.darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            elements.darkModeToggle.innerHTML = document.body.classList.contains('dark-mode') ?
+                '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Initial load
+        loadTasks();
+
+        function addTask(e) {
+            e.preventDefault();
+            const task = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                priority: document.getElementById('priority').value,
+                dueDate: document.getElementById('dueDate').value,
+                completed: false
+            };
+
+            if (!task.title) return;
+
+            fetch('/api/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(task)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                todos.push(data);
+                filterAndRender();
+                showToast('Task added successfully!', 'success');
+                elements.todoForm.reset();
+            })
+            .catch(err => {
+                console.error('Add task error:', err);
+                showToast('Failed to add task.', 'danger');
+            });
+        }
+
+        function loadTasks() {
+            fetch('/api/todos')
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    todos = data;
+                    filterAndRender();
+                })
+                .catch(err => {
+                    console.error('Load tasks error:', err);
+                    showToast('Failed to load tasks.', 'danger');
+                    todos = [];
+                    filterAndRender();
+                });
+        }
+
+        function toggleTask(id) {
+            fetch(`/api/todos/${id}/toggle`, { method: 'PUT' })
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    const index = todos.findIndex(t => t.id === id);
+                    todos[index] = data;
+                    filterAndRender();
+                    showToast(`Task ${data.completed ? 'completed' : 'reopened'}!`, 'success');
+                })
+                .catch(err => {
+                    console.error('Toggle task error:', err);
+                    showToast('Failed to toggle task.', 'danger');
+                });
+        }
+
+        function deleteTask(id) {
+            fetch(`/api/todos/${id}`, { method: 'DELETE' })
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    todos = todos.filter(t => t.id !== id);
+                    filterAndRender();
+                    showToast('Task deleted!', 'warning');
+                })
+                .catch(err => {
+                    console.error('Delete task error:', err);
+                    showToast('Failed to delete task.', 'danger');
+                });
+        }
+
+        function filterAndRender() {
+            let filtered = todos.filter(t => {
+                const matchesSearch =
+                    t.title.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    (t.description && t.description.toLowerCase().includes(currentSearch.toLowerCase()));
+                if (currentFilter === 'all') return matchesSearch;
+                if (currentFilter === 'active') return matchesSearch && !t.completed;
+                if (currentFilter === 'completed') return matchesSearch && t.completed;
+                if (currentFilter === 'high') return matchesSearch && t.priority === 'high';
+            });
+
+            filtered.sort((a, b) => {
+                if (currentSort === 'date-asc') return new Date(a.createdAt) - new Date(b.createdAt);
+                if (currentSort === 'date-desc') return new Date(b.createdAt) - new Date(a.createdAt);
+                if (currentSort === 'priority') {
+                    const order = { high: 0, medium: 1, low: 2 };
+                    return order[a.priority] - order[b.priority];
+                }
+                if (currentSort === 'alphabetical') return a.title.localeCompare(b.title);
+            });
+
+            renderTasks(filtered);
+            updateStats();
+        }
+
+        function renderTasks(tasks) {
+            elements.todoListContainer.innerHTML = tasks.length ?
+                tasks.map(t => `
+                    <div class="todo-item ${t.completed ? 'completed' : ''}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="todo-title">${t.title}<span class="priority-badge priority-${t.priority}">${t.priority}</span></h5>
+                                <p class="todo-description">${t.description || 'No description'}</p>
+                                ${t.dueDate ? `<small><i class="fas fa-calendar-alt"></i> Due: ${new Date(t.dueDate).toLocaleDateString()}</small>` : ''}
+                            </div>
+                            <div class="todo-actions">
+                                <button class="btn btn-sm btn-success" onclick="toggleTask('${t.id}')">
+                                    <i class="fas ${t.completed ? 'fa-undo' : 'fa-check'}"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteTask('${t.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') :
+                '<div class="empty-state"><i class="fas fa-tasks"></i><p>No tasks found</p></div>';
+        }
+
+        function updateStats() {
+            elements.totalTasks.textContent = todos.length;
+            elements.completedTasks.textContent = todos.filter(t => t.completed).length;
+            elements.pendingTasks.textContent = todos.filter(t => !t.completed).length;
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast bg-${type} text-white`;
+            toast.innerHTML = `${message}<button class="btn-close btn-close-white ms-2" onclick="this.parentElement.remove()"></button>`;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        window.toggleTask = toggleTask;
+        window.deleteTask = deleteTask;
+    });
+</script>
+</body>
+</html>
