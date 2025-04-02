@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  AWS_REGION: us-east-1  # Change to your AWS region
+  AWS_REGION: us-east-2
   ECR_REPOSITORY: todo-app
   ECS_CLUSTER: todo-app-Cluster
   ECS_SERVICE: todo-app-service
