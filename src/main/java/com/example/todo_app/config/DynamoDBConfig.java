@@ -9,7 +9,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import jakarta.annotation.PostConstruct;
-import com.example.todo_app.model.Todo;
+
 
 @Configuration
 public class DynamoDBConfig {
