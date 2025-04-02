@@ -72,7 +72,7 @@ jobs:
         aws ecs describe-task-definition --task-definition ${{ env.TASK_DEFINITION_FAMILY }} --query taskDefinition > task-definition.json
         
         # Update container image in task definition to use latest tag
-        jq '.containerDefinitions[0].image = "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest"' task-definition.json > new-task-definition.json
+        jq '.containerDefinitions[0].image = "888577065142.dkr.ecr.eu-central-1.amazonaws.com/todo-app:latest"' task-definition.json > new-task-definition.json
         
         # Register new task definition version
         NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
