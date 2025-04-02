@@ -100,7 +100,7 @@ jobs:
                 TaskDefinition: "${TASK_DEF_ARN}"
                 LoadBalancerInfo:
                   ContainerName: "${CONTAINER_NAME}"
-                  ContainerPort: 3000
+                  ContainerPort: 8089
                 PlatformVersion: "LATEST"
         EOF
         
